@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SignupType } from "@aditya6112/zod-validation";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
