@@ -1,13 +1,29 @@
 import { ChangeEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { SignupType } from "@aditya6112/zod-validation";
+import axios from "axios";
+import { BACKEND_URL } from "../config";
 
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
+    const navigate = useNavigate();
     const [postInputs, setpostInputs] = useState<SignupType>({
         name: "",
         email: "",
         password: "",
     });
+
+    async function sendRequest() {
+        try {
+            const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`, postInputs);
+            const jwt = response.data.jwt;
+            localStorage.setItem("token", jwt);
+            navigate("/blogs");
+        } catch (e) {
+            alert("Error ! While signing up!!")
+            //alert the user here that request failed
+        }
+    }
+
     return (
         <div className="h-screen flex justify-center flex-col">
             <div className="flex justify-center">
@@ -22,7 +38,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                         </div>
                     </div>
                     <div className="pt-3">
-                        <LabelledInput
+                        {type === "signup" ? <LabelledInput
                             label="Name"
                             placeholder="Enter your name"
                             onChange={(e) => {
@@ -31,7 +47,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                                     name: e.target.value,
                                 });
                             }}
-                        />
+                        /> : null}
                         <LabelledInput
                             label="Email"
                             placeholder="Enter your email"
@@ -56,6 +72,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                     </div>
                     <div className="pt-5">
                         <button
+                            onClick={sendRequest}
                             type="button"
                             className="w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4
                focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"

@@ -1,12 +1,9 @@
-import { FullBlog } from "../components/FullBlog";
-import { useBlog } from "../hooks"
-import { useParams } from "react-router-dom";
+import { Appbar } from "../components/Appbar"
+import { BlogCard } from "../components/BlogCard"
+import { useBlogs } from "../hooks"
 
-export const Blog = () => {
-    const {id} = useParams();
-    const { loading, blog } = useBlog({
-        id: id || ""
-    });
+export const Blogs = () => {
+    const { loading, blogs } = useBlogs();
     if (loading) {
         return <div>
             <div className="flex items-center justify-center h-screen" role="status">
@@ -16,11 +13,23 @@ export const Blog = () => {
                 </svg>
                 <span className="sr-only">Loading...</span>
             </div>
+
         </div>
     }
-    return (
-        <div>
-            <FullBlog blog={blog}/>
+
+    return <div>
+        <Appbar />
+        <div className="flex justify-center">
+            <div className="max-w-xl">
+                {blogs.map(blog => <BlogCard
+                    id={blog.id}
+                    authorName={blog.author.name || "Anonymus"}
+                    title={blog.title}
+                    content={blog.content}
+                    publishedDate={"Dec 20,2024"}
+                />)}
+
+            </div>
         </div>
-    )
+    </div>
 }
